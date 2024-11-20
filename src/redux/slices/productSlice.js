@@ -15,16 +15,20 @@ const productSlice = createSlice({
   name :'products',
   initialState:{
      allProducts:[],
+     dummyAllProducts :[],
      loading:false,
      errorMsg:""
   },
   reducers:{
-
+   searchProduct : (state,actionByHeader)=>{
+   state.allProducts= state.dummyAllProducts.filter(item=>item.title.toLowerCase().includes(actionByHeader.payload))
+   }
   },
   extraReducers:(builder)=>{
     builder.addCase(fetchProducts.fulfilled,(state,apiResult)=>{
       // reducer function - promise fst case
       state.allProducts = apiResult.payload
+      state.dummyAllProducts = apiResult.payload
       state.loading=false
       state.errorMsg=""
     })
@@ -32,16 +36,18 @@ const productSlice = createSlice({
      // promise secnd case pending case doesnt return output
     // loading alwys true when pending cse done
       state.allProducts = []
+      state.dummyAllProducts = []
       state.loading=true
       state.errorMsg=""
     })
     builder.addCase(fetchProducts.rejected,(state)=>{
       // promise thrd case rejected case doesnt return output
        state.allProducts = []
+       state.dummyAllProducts = []
        state.loading=false
        state.errorMsg="API called failed"
      })
   }
 })
-
+export const {searchProduct}= productSlice.actions
 export default productSlice.reducer
